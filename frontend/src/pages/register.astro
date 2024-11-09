@@ -1,0 +1,82 @@
+---
+
+---
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<title>Astro</title>
+	</head>
+	<body>
+		<div class="container">
+			<h3>Register</h3>
+			<form class="register-form">
+				<label>
+					<span>Username:</span>
+					<input type="text" name="register-username" autocomplete="off" id="register-username" required>
+				</label>
+				<label>
+					<span>Password:</span>
+					<input type="password" name="register-password" required>
+				</label>
+                <label>
+					<span>firstname:</span>
+					<input type="text" name="register-firstname" required>
+				</label>
+				<label>
+					<span>lastname:</span>
+					<input type="text" name="register-lastname" required>
+				</label>
+				<button type="submit">Register</button>
+			</form>
+			<button id="show-btn">Show accounts</button>
+			<a href="/">Login</a>
+		</div>
+
+		<script>
+			const form = document.querySelector('.login-form') as HTMLFormElement
+
+			const registerForm = document.querySelector('.register-form') as HTMLFormElement
+
+			registerForm.addEventListener('submit', async (e) => {
+				e.preventDefault()
+				const formData = new FormData(registerForm)
+				const username = formData.get('register-username')
+				const password = formData.get('register-password')
+                const firstname = formData.get('register-firstname')
+				const lastname = formData.get('register-lastname')
+
+				const response = await fetch(`http://localhost:3000/api/users/`, {
+					method: 'POST',
+					headers: {
+						"Content-Type": 'application/json',
+					},
+					body: JSON.stringify({
+                        "id": "1",
+						"username": username,
+						"password": password,
+						"firstname": firstname,
+						"lastname": lastname
+					}),
+					credentials: 'include'
+				})
+				const data = await response.json()
+			})
+
+			const showBtn = document.querySelector('#show-btn') as HTMLFormElement
+			showBtn.addEventListener('click', async (e) => {
+				e.preventDefault()
+
+				const response = await fetch(`http://localhost:3000/api/users/`)
+				if (!response.ok) {
+					throw new Error(`response status: ${response.status}`);
+				}
+				const data = await response.json()
+				console.log(data)
+			})
+		</script>
+	</body>
+</html>

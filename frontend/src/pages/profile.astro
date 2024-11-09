@@ -1,0 +1,87 @@
+---
+
+---
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<title>Astro</title>
+	</head>
+	<body>
+		<div class="container">
+			<h1 class="title">Loading...</h1>
+            <div class="profile-area"></div>
+    </div>
+
+	<script>
+        const title = document.querySelector('.title') as HTMLHeadingElement
+        const profileArea = document.querySelector('.profile-area') as HTMLHeadingElement
+
+        const checkAuth = async () => {
+            const res = await fetch(`http://localhost:3000/api/users/auth`, {
+                credentials: 'include'
+            })
+            console.log(res)
+            if (res.ok) {
+                const data = await res.json()
+                title.innerText = "Welcome to your profile"
+                console.log(data)
+
+                const userName = document.createElement("p")
+                userName.innerHTML = `Username : ${data.username}`
+                profileArea.appendChild(userName)
+
+                const firstName = document.createElement("p")
+                firstName.innerHTML = `Firstname : ${data.firstname}`
+                profileArea.appendChild(firstName)
+
+                const lastName = document.createElement("p")
+                lastName.innerHTML = `Lastname : ${data.lastname}`
+                profileArea.appendChild(lastName)
+
+                const logoutBtn = document.createElement("button")
+                logoutBtn.innerHTML = "Log out"
+                logoutBtn.addEventListener("click", logout)
+                profileArea.appendChild(logoutBtn)
+
+            }else{
+                const goToLogin = document.createElement("a")
+                goToLogin.innerHTML = "go to Login page"
+                goToLogin.setAttribute("href", "/")
+                profileArea.appendChild(goToLogin)
+            }
+        }
+    
+    const changePassword = () =>{
+
+    }
+
+    const logout =  async () =>{
+        // const response = await fetch(`http://localhost:3000/api/users/logout`)
+		// 		if (!response.ok) {
+		// 			throw new Error(`response status: ${response.status}`);
+		// 		}
+		// 		const data = response.json()
+        //         window.location.href = '/'
+
+        try {
+            const response = await fetch('http://localhost:3000/api/users/logout', {
+                method: 'GET',
+                credentials: 'include'
+            });
+            if (!response.ok) {
+                throw new Error(`response status: ${response.status}`);
+            }
+            console.log('Logged out');
+            window.location.href = '/'
+        } catch (error) {
+            console.error('Error:', error);
+        } 
+    }
+    checkAuth()
+    </script>
+	</body>
+</html>
